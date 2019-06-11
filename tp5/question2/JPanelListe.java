@@ -63,8 +63,11 @@ public class JPanelListe extends JPanel implements ActionListener, ItemListener 
         add(texte, "Center");
 
         boutonRechercher.addActionListener(this);
-        // à compléter;
-
+        
+        boutonRetirer.addActionListener(this);
+        boutonOccurrences.addActionListener(this);
+        ordreCroissant.addItemListener(this);
+        ordreDecroissant.addItemListener(this);
     }
 
     /** ne pas modifier les affichages, les classes de tests en ont besoin ... */
@@ -80,9 +83,13 @@ public class JPanelListe extends JPanel implements ActionListener, ItemListener 
                     .getText());
                 afficheur.setText("résultat du retrait de tous les éléments commençant par -->  "+ saisie.getText() + " : " + res);
             } else if (ae.getSource() == boutonOccurrences) {
+                
                 Integer occur = occurrences.get(saisie.getText());
+                
                 if (occur != null)
                     afficheur.setText(" -->  " + occur + " occurrence(s)");
+                else if(occurrences.get(saisie.getText())!=null&&!liste.contains(saisie.getText())) 
+                    afficheur.setText(" -->  " + 0 + " occurrence(s)");    
                 else
                     afficheur.setText(" -->  ??? ");
             }
@@ -95,18 +102,24 @@ public class JPanelListe extends JPanel implements ActionListener, ItemListener 
 
     public void itemStateChanged(ItemEvent ie) {
         if (ie.getSource() == ordreCroissant)
-            ;// à compléter
+        {Collections.sort(liste);
+        texte.setText(liste.toString())
+            ;}
         else if (ie.getSource() == ordreDecroissant)
-            ;// à compléter
+           Collections.sort(liste, new ReverseStringComparator());
 
         texte.setText(liste.toString());
     }
 
     private boolean retirerDeLaListeTousLesElementsCommencantPar(String prefixe) {
         boolean resultat = false;
-        // à compléter
-        // à compléter
-        // à compléter
+        if(liste.contains(prefixe)){
+            liste.removeAll(Collections.singleton(prefixe));
+            Integer oldValue = occurrences.put(saisie.getText(), 0);
+            
+            return true;
+        }
+        
         return resultat;
     }
 
